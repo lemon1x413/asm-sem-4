@@ -11,14 +11,14 @@
     formula_message DB ' 35x^2-2x+1,        x<=0',13,10
     DB ' (36x^2-17x+1)/x,   0<x<=6',13,10
     DB ' 1250/x,            x>6',13,10,'$'
-    input_message DB "Enter an integer number: $" 
+    input_message DB "Enter an integer number [-43; 65535]: $" 
     result_message DB "Result: $" 
     run_message DB "Do you want to continue? (y/n): $" 
     error_run_message DB "Invalid input. Ending program...$" 
     empty_input_message DB "Empty input$" 
     invalid_input_message DB "Invalid input$" 
     overflow_input_message DB "Overflow input$" 
-    overflow_calc_message DB "Calculation overflow! Result is too large.$"
+    overflow_calc_message DB "Calculation overflow! Result is too large$"
 
 .CODE
 MAIN PROC FAR
@@ -27,13 +27,13 @@ MAIN PROC FAR
 
 main_loop:
     MOV sign, 0
-    CALL input_number
+    CALL INPUT_NUMBER
     JC ask_rerun
 
     CALL OPERATIONS
     JC ask_rerun
 
-    CALL print_number
+    CALL PRINT_NUMBER
 
 ask_rerun:
     CALL line 
@@ -92,7 +92,6 @@ calc_overflow:
 
 case1:
 ;   (36x^2-17x+1)/x (0<x<=6)
-    MOV sign, 0
     MOV AX, [number]
     MOV CX, AX
     MUL CX
@@ -175,7 +174,7 @@ case3:
 
 OPERATIONS ENDP
 
-input_number PROC NEAR
+INPUT_NUMBER PROC NEAR
     MOV number, 0
 
     MOV AH, 9
@@ -268,7 +267,7 @@ end_convertation:
     CLC
     RET
     
-input_number ENDP
+INPUT_NUMBER ENDP
 
 line PROC NEAR
     MOV AH, 2
@@ -279,7 +278,7 @@ line PROC NEAR
     RET
 line ENDP
 
-print_number PROC NEAR
+PRINT_NUMBER PROC NEAR
     MOV AH, 9 
     LEA DX, result_message
     INT 21h 
@@ -308,7 +307,7 @@ m3:
     MOV AL, '.'         
     INT 29h
 
-    MOV CX, 4 ; число знаків після коми           
+    MOV CX, 10 ; число знаків після коми           
     
 fraction_loop:
     MOV AX, remainder
@@ -333,5 +332,5 @@ fraction_loop:
 
 end_print:
     RET
-print_number ENDP
+PRINT_NUMBER ENDP
 END main
